@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -11,8 +12,10 @@ class TaskController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $tasks = Task::orderBy('created_at', 'desc')->get();
+    {   
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $tasks = $user->tasks()->orderBy('created_at', 'desc')->get();
         return view('tasks.index', compact('tasks'));
     }
 
@@ -34,8 +37,30 @@ class TaskController extends Controller
             'description' => 'required'
         ]);
 
-        Task::create($request->only('title', 'description'));
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->tasks()->create($request->only('title', 'description'));
         return redirect()->route('tasks.index')->with('success', 'Tarefa concluída com sucesso');
+    }
+
+    public function reopen(Request $request, $id) {
+        $request->validate([
+            'justification' => 'required|string|max:1000'
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $task = $user->tasks()->findOrFail($id);
+
+        $task->completed = false;
+        $task->save();
+
+        $task->reopenJustification()->create([
+            'user_id' => Auth::id(),
+            'justification' => $request->justification,
+        ]);
+
+        return redirect()->route('tasks.index')->with('success', 'Tarefa reaberta!');
     }
 
     /**
