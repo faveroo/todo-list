@@ -11,7 +11,11 @@ class AuthController extends Controller
 {
     public function showLoginForm() 
     {
-        return view('auth.index');
+        if (Auth::check()) {
+        return redirect()->route('tasks.index');
+    }
+
+        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -49,4 +53,14 @@ class AuthController extends Controller
 
         return redirect()->route('tasks.index')->with('success', 'Cadastro realizado com sucesso!');
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('loginForm.get');
+    } 
 }
