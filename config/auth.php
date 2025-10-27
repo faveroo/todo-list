@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    'redirect_to' => '/login',
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults

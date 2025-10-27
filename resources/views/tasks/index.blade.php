@@ -64,15 +64,29 @@
                                 </button>
                             </form>
 
-                            {{-- Marcar como concluída / pendente --}}
-                            <form action="{{ route('tasks.update', $task->id) }}" method="POST" class="d-inline">
+                            @if($task->completed)
+                            <form action="{{ route('tasks.reopen', $task->id) }}" method="POST" class="d-inline">
                                 @csrf
-                                @method('PUT')
-                                <input type="hidden" name="completed" value="{{ $task->completed ? 0 : 1 }}">
-                                <button type="submit" class="btn btn-sm {{ $task->completed ? 'btn-warning' : 'btn-success' }}">
-                                    {{ $task->completed ? 'Reabrir' : 'Concluir' }}
+
+                                <div class="mb-2">
+                                    <label for="justification_{{ $task->id }}" class="form-label">Justificativa da reabertura</label>
+                                    <textarea name="justification" id="justification_{{ $task->id }}" class="form-control" rows="2" required></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-sm btn-warning">
+                                    Reabrir
                                 </button>
                             </form>
+                            @else
+                                <form action="{{ route('tasks.update', $task->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="completed" value="1">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    Concluir
+                                </button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
