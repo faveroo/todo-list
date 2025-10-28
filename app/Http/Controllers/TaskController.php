@@ -55,10 +55,14 @@ class TaskController extends Controller
         $task->completed = false;
         $task->save();
 
+        $user->completed_tasks -= 1;
+        $user->save();
+
         $task->reopenJustification()->create([
             'user_id' => Auth::id(),
             'justification' => $request->justification,
         ]);
+
 
         return redirect()->route('tasks.index')->with('success', 'Tarefa reaberta!');
     }
@@ -86,6 +90,15 @@ class TaskController extends Controller
     {   
         $task = Task::findOrFail($id);
         $task->update($request->only('title', 'description', 'completed'));
+
+        if($request->completed == 1) {
+            
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            $user->completed_tasks += 1;
+            $user->save();
+        }
+
         return redirect()->route('tasks.index')->with('success', 'Tarefa atualizada!');
     }
 

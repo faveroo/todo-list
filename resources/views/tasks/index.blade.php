@@ -62,7 +62,6 @@
                             @if($task->completed)
                             <form action="{{ route('tasks.reopen', $task->id) }}" method="POST" class="d-inline">
                                 @csrf
-
                                 <div class="mb-2">
                                     <label for="justification_{{ $task->id }}" class="form-label">Justificativa da reabertura</label>
                                     <textarea name="justification" id="justification_{{ $task->id }}" class="form-control" rows="2" required></textarea>
