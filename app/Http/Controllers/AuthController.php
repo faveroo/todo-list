@@ -15,7 +15,7 @@ class AuthController extends Controller
         return redirect()->route('tasks.index');
     }
 
-        return view('auth.login');
+        return view('auth.index');
     }
 
     public function login(Request $request)
