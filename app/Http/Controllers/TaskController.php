@@ -91,8 +91,8 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
         $task->update($request->only('title', 'description', 'completed'));
 
-        if($request->completed == 1) {
-            
+        if($request->completed == 1 && $task->completed == 0) {
+
             /** @var \App\Models\User $user */
             $user = Auth::user();
             $user->completed_tasks += 1;
