@@ -12,9 +12,10 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 
 Route::middleware(['auth'])->group(function() {
+
     Route::resource('user', UserController::class);
     Route::resource('tasks', TaskController::class);
-    Route::post('/tasks/{task}/reopen', [TaskController::class, 'reopen'])
-    ->name('tasks.reopen');
+    Route::post('/tasks/{task}/reopen', [TaskController::class, 'reopen'])->name('tasks.reopen');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 });
